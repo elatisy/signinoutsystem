@@ -72,7 +72,7 @@ class SignUpHandler
             ];
         }
 
-        if($row->is_signed_up){
+        if($row->is_signed_up || $this->dbmanager->find($this->recv['account'],'account')['result'] != null){
             return [
                 'code'      => '6001',
                 'message'   => '账号已存在'
@@ -122,10 +122,10 @@ class SignUpHandler
                     ];
                 }
 
-                if(($this->now - $row->authCode_requestTime) > $this->limit_time){
+                if((intval($this->now) - intval($row->authCode_requestTime)) < $this->limit_time){
                     return [
                         'code'      => '4002',
-                        'message'   => '验证码请求过于频繁'
+                        'message'   => '验证码请求过于频繁',
                     ];
                 }
 
