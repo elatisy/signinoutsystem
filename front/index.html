@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>test</title>
+    </head>
+    <style>
+        ul li{
+            list-style-type: none;
+        }
+    
+        #form{
+            text-align: center;
+        }
+    
+        .alert{
+            display: none;
+        }
+    
+        .submit{
+            padding: 5px 10px;
+            font-size: 13px;
+            color: black;
+            border: none;
+            background-color: #efefef;
+            animation: submit 0.3s linear;
+            margin-left: 50px;
+        }
+    
+        .submit:hover{
+            animation: submit_hover 0.3s linear;
+            background-color: black;
+            color: white;
+        }
+    
+        @keyframes submit_hover{
+            from{
+                background-color: #efefef;
+            }to{
+                background-color: black;
+            }
+        }
+    
+        @keyframes submit{
+            from{
+                background-color:black;
+            }to{
+                background-color: #efefef;
+            }
+        }
+    </style>
+
+    <body>
+        <form id="form">
+            <ul>
+                <li><input type="text" name="phoneNumber" /></li>
+                <li><input type="textarea" name="message" /></li>
+                <li><input type="button" name="submmit" value="发送" onclick="javascript:send();" /></li>
+            </ul>
+        </form>
+    </body>
+<script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+<script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+<script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+<script type="text/babel">
+    var myinterface = "http://localhost:8888/test";
+    function send() {
+        let row = document.getElementById('form');
+        let data = {};
+        data['message']     = row.message.value;
+        data['phoneNumber'] = row.phoneNumber.value;
+
+        fetch(myinterface,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/json'
+            },
+            body: JSON.stringify(data),
+        }).then(function(res){
+                if(res.status != 200){
+                    console.log("Error, status: " + res.status);
+                    return;
+                }else{
+                    console.log("Success, status: " + res.status);
+                    return res.json();
+                }
+        }).then(function(res){
+            console.log(res);
+        }).catch(function(err){
+                console.log("Fetch Error: " + err);
+        });
+    }
+</script>
+</html>
