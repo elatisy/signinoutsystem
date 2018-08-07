@@ -15,7 +15,10 @@ class Judger
     */
     private $events = [
         'getAuthCode'    => [ 'phoneNumber'] ,
-        'signUp'         => ['userName', 'account', 'password', 'phoneNumber','authCode']
+        'signUp'         => ['userName', 'account', 'password', 'phoneNumber','authCode'],
+        'logIn'          => ['account', 'password'],
+        'logOut'         => ['account', 'token'],
+        'signIn'         => ['account', 'token'],
     ];
 
     /**
@@ -26,14 +29,14 @@ class Judger
 
         if(!isset($recv['event'])){
             return [
-                'code'      => '1001',
+                'code'      => 1001,
                 'message'   => 'event缺失'
             ];
         }
 
         if(!isset( $this->events[ $recv['event'] ] ) ){
             return [
-                'code'      => '1002',
+                'code'      => 1002,
                 'message'   => '未知event'
             ];
         }
@@ -43,14 +46,16 @@ class Judger
         foreach ($info as $key){
             if(!isset($recv[$key])){
                 return [
-                    'code'      => '3002',
+                    'code'      => 3002,
                     'message'   => $key.'缺失'
                 ];
             }
 
+            if($key == 'token'){ continue; }
+
             if(mb_strlen($recv[$key]) > $this->maxlen){
                 return [
-                    'code'      => '3003',
+                    'code'      => 3003,
                     'message'   => $key.'长度超限,最大长度: '.strval($this->maxlen),
                 ];
             }
@@ -58,7 +63,7 @@ class Judger
         }
 
         return [
-            'code'      => '0',
+            'code'      => 0,
             'message'   => 'ok'
         ];
     }

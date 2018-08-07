@@ -39,10 +39,10 @@ class SMSSender
 
             $sender = new SmsSingleSender($appid, $appkey);
             $result = json_decode($sender->sendWithParam('86',$phoneNumber, $modelid, $message,'','',''),true);
-            return array_merge($result,['status' => '0']);
+            return array_merge($result,['status' => 0]);
         }catch(\Exception $e){
             return [
-                'status'    => '1',
+                'status'    => 1,
                 'message'   => '发送短信错误'.$e->getMessage(),
             ];
         }

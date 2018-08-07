@@ -57,47 +57,46 @@ class SignUpHandler
     public function signUp(){
 
         $row = $this->dbmanager->find($this->recv['phoneNumber']);
-        if($row['status'] == '1'){
-            return [
-                'code'      => '8001',
-                'message'   => '服务器错误'
-            ];
-        }
-
-        $row = $row['result'];
         if($row == null){
             return [
-                'code'      => '6003',
+                'code'      => 6003,
                 'message'   => '未请求验证码'
             ];
         }
 
-        if($row->is_signed_up || $this->dbmanager->find($this->recv['account'],'account')['result'] != null){
+        if($row->is_signed_up || $this->dbmanager->find($this->recv['account'],'account') != null){
             return [
-                'code'      => '6001',
+                'code'      => 6001,
                 'message'   => '账号已存在'
             ];
         }
 
         if($this->recv['authCode'] != $row->authCode){
             return [
-                'code'      => '6002',
+                'code'      => 6002,
                 'message'   => '验证码错误'
             ];
         }
 
+        do{
+            $token = $this->createToken();
+            $check = $this->dbmanager->find($token,'token');
+        }while($check != null);
+
         $db_result = $this->dbmanager->write(array_merge($this->recv, [
             'is_signed_up'  => true,
+            'token'         => $token,
         ]));
 
-        if($db_result['status'] == '0'){
+        if($db_result){
             return [
-                'code'      =>  '0',
+                'code'      =>  0,
                 'message'   =>  'ok'
             ];
         }
+
         return [
-            'code'      => '8001',
+            'code'      => 8001,
             'message'   => '服务器错误'
         ];
     }
@@ -105,26 +104,18 @@ class SignUpHandler
 
     public function getAuthCode(){
         try{
-            $res = $this->dbmanager->find($this->recv['phoneNumber']);
-            if($res['status'] == '1'){
-                return [
-                    'code'      => '8001',
-                    'message'   => '服务器错误'
-                ];
-            }
-
-            $row = $res['result'];
+            $row = $this->dbmanager->find($this->recv['phoneNumber']);
             if($row != null){
                 if($row->is_signed_up){
                     return [
-                        'code'      => '6001',
+                        'code'      => 6001,
                         'message'   => '账号已存在'
                     ];
                 }
 
                 if((intval($this->now) - intval($row->authCode_requestTime)) < $this->limit_time){
                     return [
-                        'code'      => '4002',
+                        'code'      => 4002,
                         'message'   => '验证码请求过于频繁',
                     ];
                 }
@@ -135,27 +126,33 @@ class SignUpHandler
             $message = [$authcode, strval(( $this->max_time / 60 ))];
 
             $smssender = new SMSSender();
-            $sms_result = $smssender->send($message, $this->recv['phoneNumber'], 'signup');
-            $db_result  = $this->dbmanager->write(array_merge($this->recv,[
+            $smssender->send($message, $this->recv['phoneNumber'], 'signup');
+            $this->dbmanager->write(array_merge($this->recv,[
                 'authCode'              => $authcode,
                 'authCode_requestTime'  => $this->now,
                 'is_signed_up'          => false,
             ]));
 
-            if($sms_result['status'] == '0' && $db_result['status'] == '0'){
-                return [
-                    'code'      => '0',
-                    'message'   => 'ok'
-                ];
-            }else{
-                return [
-                    'code'      => '8001',
-                    'message'   => '服务器错误'
-                ];
-            }
+            return [
+                'code'      => 0,
+                'message'   => 'ok'
+            ];
         }catch (\Exception $e){
-            return ['message'   => $e->getMessage()];
+            return [
+                'code'      => 8001,
+                'message'   => '服务器错误'
+            ];
         }
+    }
+
+    private function createToken(){
+        $characters = 'qwertyuiopasdfghjklzxcvbnm123456789QWERTYUIOPASDFGHJKLZXCVBNM';
+        $res = '';
+        $len = strlen($characters) - 1;
+        for($i = 0;$i < 32; ++$i){
+            $res .= $characters[rand(0,$len)];
+        }
+        return $res;
     }
 
 }

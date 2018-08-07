@@ -1,0 +1,5 @@
+{
+  "event": "logOut",
+  "token": "yourtoken",
+  "account": "elatis"
+}
