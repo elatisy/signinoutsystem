@@ -29,7 +29,7 @@ class LogOutHandler
             $res = $authprocessor->auth($this->recv);
             if($res['status']){
                 $this->dbmanager->write([
-                    'is_log_in' => true
+                    'is_log_in' => false
                 ]);
             }
 

@@ -19,6 +19,7 @@ class Judger
         'logIn'          => ['account', 'password'],
         'logOut'         => ['account', 'token'],
         'signIn'         => ['account', 'token'],
+        'signOut'        => ['account', 'token'],
     ];
 
     /**

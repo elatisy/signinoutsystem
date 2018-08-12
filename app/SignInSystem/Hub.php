@@ -6,6 +6,7 @@ use App\SignInSystem\SignUp\SignUpHandler;
 use App\SignInSystem\LogIn\LogInHandler;
 use App\SignInSystem\LogOut\LogOutHandler;
 use App\SignInSystem\SignIn\SignInHandler;
+use App\SignInSystem\SignOut\SignOutHandler;
 
 class Hub
 {
@@ -46,6 +47,11 @@ class Hub
             $recv['table'] = 'declarations';
             $signin = new SignInHandler($recv);
             $res = $signin->handle();
+
+        } elseif ($recv['event'] == 'signOut'){
+            $recv['table'] = 'declarations';
+            $signout = new SignOutHandler($recv);
+            $res = $signout->handle();
 
         }else {
             $res = [

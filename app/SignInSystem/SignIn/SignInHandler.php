@@ -24,11 +24,23 @@ class SignInHandler
      */
     private $recv;
 
+    /**
+     * @var string
+     */
+    private $now_day;
+
+    /**
+     * @var integer
+     */
+    private $timestamp;
+
     public function __construct($recv)
     {
         $this->dbmanager = new DataBaseManager($recv['table'],'token',$recv['token']);
         $this->authprocessor = new AuthProcessor();
         $this->recv = $recv;
+        $this->now_day = date('Y-m-d');
+        $this->timestamp = intval($recv['timestamp']);
     }
 
     public function handle(){
@@ -42,16 +54,30 @@ class SignInHandler
                 return $res['result'];
             }
 
+            $row = $this->dbmanager->multi_where_find([
+                'token'     => $this->recv['token'],
+                'event'     => 'signOut',
+                'date'      => $this->now_day
+            ]);
+
+            if($row != null){
+                return [
+                    'code'      => 9002,
+                    'message'   => '今日已签退'
+                ];
+            }
+
             if(!isset($this->recv['declaration'])){
                 $this->recv['declaration'] = '早起的鸟儿有虫吃~';
             }
 
             $this->dbmanager->write([
                 'token'         => $this->recv['token'],
-                'date'          => date('Y_m_d'),
+                'date'          => $this->now_day,
                 'declaration'   => $this->recv['declaration'],
                 'event'         => 'signIn',
-                'created_at'    => intval(Carbon::now()->timestamp)
+                'created_at'    => $this->timestamp,
+                'photoUrl'      => $this->recv['photoUrl']
             ],true);
 
             return [

@@ -86,4 +86,19 @@ class DataBaseManager
         return $row;
     }
 
+    public function multi_where_find(array $wheres, bool $one_row = true){
+        $db = DB::table($this->table);
+        foreach ($wheres as $where => $target){
+            $db = $db->where($where, '=', $target);
+        }
+
+        if($one_row){
+            $row = $db->first();
+        }else{
+            $row = $db->get();
+        }
+
+        return $row;
+    }
+
 }

@@ -13,14 +13,10 @@ class SignUpHandler
      */
     private $dbmanager;
 
-
-
     /**
      * @var array
      */
     private $recv;
-
-
 
     /**
      * 验证码有效时间
