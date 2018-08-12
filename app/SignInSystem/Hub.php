@@ -7,6 +7,7 @@ use App\SignInSystem\LogIn\LogInHandler;
 use App\SignInSystem\LogOut\LogOutHandler;
 use App\SignInSystem\SignIn\SignInHandler;
 use App\SignInSystem\SignOut\SignOutHandler;
+use App\SignInSystem\WorkingTimeList\WorkingTimeListGenerator;
 
 class Hub
 {
@@ -52,6 +53,10 @@ class Hub
             $recv['table'] = 'declarations';
             $signout = new SignOutHandler($recv);
             $res = $signout->handle();
+
+        }elseif ($recv['event'] == 'workingTimeList'){
+            $workingtimegenerator = new WorkingTimeListGenerator($recv);
+            $res = $workingtimegenerator->handle();
 
         }else {
             $res = [

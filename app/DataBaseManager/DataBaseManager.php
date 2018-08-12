@@ -60,10 +60,11 @@ class DataBaseManager
     }
 
     /**
+     * 单条件查找
      * @param string $target
      * @param string|null $where
      * @param bool $one_row
-     * @return object
+     * @return object/array
      */
     public function find(string $target = '',string $where = null, bool $one_row = true){
         if($this->target != null && $target == ''){
@@ -86,6 +87,12 @@ class DataBaseManager
         return $row;
     }
 
+    /**
+     * 多条件查找
+     * @param array $wheres
+     * @param bool $one_row
+     * @return object/array
+     */
     public function multi_where_find(array $wheres, bool $one_row = true){
         $db = DB::table($this->table);
         foreach ($wheres as $where => $target){
@@ -101,4 +108,12 @@ class DataBaseManager
         return $row;
     }
 
+    /**
+     * 获得一个数据表中的所有行
+     * @param string $table
+     * @return array
+     */
+    public static function get_all_rows(string $table){
+        return DB::table($table)->get();
+    }
 }

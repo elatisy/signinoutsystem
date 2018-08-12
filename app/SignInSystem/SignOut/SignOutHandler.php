@@ -54,12 +54,12 @@ class SignOutHandler
                 'date'      => $this->now_day
             ]);
 
-            if($rows != null){
-                return [
-                    'code'      => 9002,
-                    'message'   => '今日已签退'
-                ];
-            }
+//            if($rows != null){
+//                return [
+//                    'code'      => 9002,
+//                    'message'   => '今日已签退'
+//                ];
+//            }
 
             $rows = $this->dbmanager->multi_where_find([
                 'token'     => $this->recv['token'],
@@ -74,12 +74,12 @@ class SignOutHandler
                 }
             }
 
-            if($sign_in_time == 99999999999){
-                return [
-                    'code'      => 9001,
-                    'message'   => '今日尚未签到'
-                ];
-            }
+//            if($sign_in_time == 99999999999){
+//                return [
+//                    'code'      => 9001,
+//                    'message'   => '今日尚未签到'
+//                ];
+//            }
 
             $temp_dbmanager = new DataBaseManager('signinsystem','token',$this->recv['token']);
             $row = $temp_dbmanager->find();

@@ -60,12 +60,12 @@ class SignInHandler
                 'date'      => $this->now_day
             ]);
 
-            if($row != null){
-                return [
-                    'code'      => 9002,
-                    'message'   => '今日已签退'
-                ];
-            }
+//            if($row != null){
+//                return [
+//                    'code'      => 9002,
+//                    'message'   => '今日已签退'
+//                ];
+//            }
 
             if(!isset($this->recv['declaration'])){
                 $this->recv['declaration'] = '早起的鸟儿有虫吃~';
