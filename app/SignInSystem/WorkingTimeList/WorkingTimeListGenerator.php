@@ -58,9 +58,9 @@ class WorkingTimeListGenerator
                 $data []= [
                     'workingTime'   => ($row->created_at - $sign_in_time),
 //                    'photoUrl'      => $row->photoUrl,
-//                    'declaration'   => $row->declaration,
+                    'declaration'   => $row->declaration,
                     'userName'      => $user_dbmanager->find($token,'token')->userName,
-                    'timestamp'     => $row->created_at
+//                    'timestamp'     => $row->created_at
                 ];
             }
 

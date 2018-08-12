@@ -8,6 +8,8 @@ use App\SignInSystem\LogOut\LogOutHandler;
 use App\SignInSystem\SignIn\SignInHandler;
 use App\SignInSystem\SignOut\SignOutHandler;
 use App\SignInSystem\WorkingTimeList\WorkingTimeListGenerator;
+use App\SignInSystem\SignInList\SignInListGenerator;
+use App\SignInSystem\SignOutList\SignOutListGenerator;
 
 class Hub
 {
@@ -58,7 +60,15 @@ class Hub
             $workingtimegenerator = new WorkingTimeListGenerator($recv);
             $res = $workingtimegenerator->handle();
 
-        }else {
+        } elseif ($recv['event'] == 'signInList'){
+            $signinlistgenerator = new SignInListGenerator($recv);
+            $res = $signinlistgenerator->handle();
+
+        } elseif ($recv['event'] == 'signOutList'){
+            $signoutlistgenerator = new SignOutListGenerator($recv);
+            $res = $signoutlistgenerator->handle();
+
+        } else {
             $res = [
                 'code'      => '1002',
                 'message'   => '未知event'

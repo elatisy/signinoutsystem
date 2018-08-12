@@ -21,6 +21,8 @@ class Judger
         'signIn'         => ['account', 'token'],
         'signOut'        => ['account', 'token'],
         'workingTimeList'=> [],
+        'signInList'     => [],
+        'signOutList'    => []
     ];
 
     /**
